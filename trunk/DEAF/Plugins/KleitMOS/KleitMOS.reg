@@ -1,0 +1,10 @@
+<Plugin Name='KleitMOS' Bean='MOSBean' File='Plugins/KleitMOS/libKleitMOS.so'>
+	<MySQL InputHost='narr.met.psu.edu' InputUser='bvroot' OutputHost='narr.met.psu.edu' OutputUser='bvroot'/>
+	<File Filename='DefaultMOS.txt'/>
+	<Function Name='To_MySQL'/>
+	<Function Name='To_File'/>
+	<Author>Your Name Here</Author>
+	<Contact>Contact Info Here</Contact>
+	<Notes>Extra notes here</Notes>
+	<Description>Your Description Here</Description>
+</Plugin>

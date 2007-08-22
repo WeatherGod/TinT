@@ -1,0 +1,16 @@
+This VolumeExtractor package requires the BUtils package to be installed
+
+Before building and installing this package, please edit the Makefile
+to indicate the locations of the libBUtils.so file and its include files, 
+the installation paths for VolumeExtractor binaries, includes and lib files.
+
+ % make all
+
+ % make install
+
+ % make clean
+
+ % make remove
+ % make uninstall
+
+

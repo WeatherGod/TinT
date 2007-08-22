@@ -1,0 +1,26 @@
+Be sure to edit the Makefile to specify where the 
+various include files and libraries are.
+
+This package requires xml++, boost's regex, and mysql++
+
+Be sure to state the location for these packages (and mysql.h) in the
+src/Makefile file.  Note that the plugins in the Plugin directory may also
+need to have their Makefile modified, as well.
+
+to create deaf:
+   % make deaf
+
+to create libDEAF.so
+   % make libDEAF.so
+
+to build standard set of plugins:
+   % make plugins
+
+to install deaf, libDEAF.so, include files and the standard set of plugins:
+   % make install
+
+to clean (everything, including standard set of plugins)
+   % make clean
+
+to uninstall (everything, including standard set of plugins)
+   % make remove

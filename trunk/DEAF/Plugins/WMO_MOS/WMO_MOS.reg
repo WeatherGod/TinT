@@ -1,0 +1,12 @@
+<Plugin Name='WMO_MOS' Bean='MOSBean' File="Plugins/WMO_MOS/libWMO_MOS.so">
+	<File Input='\d{4}/(?:ddplus|npwmo)\.(\d{6})$' Output='MetarReports.$1'/>
+	<Function Name='From_File'/>
+	<Function Name='From_Stream'/>
+	<Function Name='To_File'/>
+	<Function Name='To_Stream'/>
+
+	<Author>Your Name Here</Author>
+	<Contact>Contact Info Here</Contact>
+	<Notes>Extra notes here</Notes>
+	<Description>Your Description Here</Description>
+</Plugin>

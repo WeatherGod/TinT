@@ -1,0 +1,16 @@
+<Plugin Name="WMO_Metar" Bean="MetarBean" File="Plugins/WMO_Metar/libWMO_Metar.so">
+	<MySQL InputHost='narr.met.psu.edu' InputUser='bvroot' OutputHost='narr.met.psu.edu' OutputUser='bvroot'/>
+	<File Input='\d{4}/(?:ddplus|npwmo)\.(\d{6})$' Output='MetarReports.$1'/>
+	<Function Name="From_File"/>
+	<Function Name="To_File"/>
+	<Function Name="From_Stream"/>
+	<Function Name="To_Stream"/>
+	<Function Name="From_MySQL"/>
+	<Function Name="To_MySQL"/>
+
+
+	<Description>Your Description Here</Description>
+	<Author>Your Name Here</Author>
+	<Contact>Contact Info Here</Contact>
+	<Notes>Extra notes here</Notes>
+</Plugin>
