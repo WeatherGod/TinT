@@ -169,7 +169,7 @@ sub PrintHelp
 sub PrintSyntax
 {
 	print STDERR "\nMake_DeafTemplate.pl --plugin | -p _PLUGINNAME_ --bean | -b _BEANNAME_\n";
-	print STDERR "                       --dest | -d _DESTDIR\n";
+	print STDERR "                       --dest | -d _DESTDIR_\n";
 	print STDERR "                       [--source | -s _BEANSOURCEDIR_]\n";
 	print STDERR "                       [--config | -c _CONFIGFILE_]\n";
 	print STDERR "                       [--syntax | -x] [--help | -h]\n\n";
@@ -462,12 +462,12 @@ bool ${PluginName}::To_Stream(const DeafBean &DataLayer, ostream &OutStream)
 // Do not modify these functions!
 $BeanName& ${PluginName}::ReCast(DeafBean& BeanRef) const
 {
-	return(static_cast<$BeanName&>(BeanRef));
+	return(dynamic_cast<$BeanName&>(BeanRef));
 }
 
 const $BeanName& ${PluginName}::ReCast(const DeafBean& BeanRef) const
 {
-	return(static_cast<const $BeanName&>(BeanRef));
+	return(dynamic_cast<const $BeanName&>(BeanRef));
 }
 
 
@@ -678,77 +678,91 @@ sub CreateMakefile
 
 	print FILESTREAM "CC = gcc
 CFLAGS = -O2
-DEAF_INC_PATH = ${DeafDir}/include
 
+include ../../include.mk
+
+###################################################
 # for example: -I /home/Zaphod/include
 MYINCS =
 
 # for example: -L /home/Zaphod/lib
 MYLIBS =
-
-
-MYSQL_INC = -I /usr/include/mysql
-LIB_LINKS = -l mysqlpp -l stdc++
-
+###################################################
 
 MYBEAN_DIR = $BeanSourceDir
+PLUGINNAME = $PluginName
+BEANNAME = $BeanName
 DEAFBUILD_DIR = \$(PWD)
 
 #-----------------------------------------------------------------------
 
-plugin : lib${PluginName}.so
+plugin : lib\$(PLUGINNAME).so
 
 
-lib${PluginName}.so : ${BeanName}.o ${PluginName}.o
-\t\$(CC) \$(LDFLAGS) -shared ${PluginName}.o ${BeanName}.o  -o lib${PluginName}.so \$(MYLIBS) \$(LIB_LINKS)
+lib\$(PLUGINNAME).so : \$(BEANNAME).o $(PLUGINNAME).o
+\t\$(CC) \$(LDFLAGS) -shared \$(PLUGINNAME).o \$(BEANNAME).o  -o lib\$(PLUGINNAME).so \\
+\t       \$(MYLIB) \$(MYSQLPP_LIB) -l stdc++
 ";
 
 	if ($IsNewBean)
 	{
 		# Have the Makefile build the bean directly to the location
 		print FILESTREAM "
-${BeanName}.o : ${BeanName}.C
-\t\$(CC) \$(CFLAGS) -fPIC -c ${BeanName}.C -o \$(DEAFBUILD_DIR)/${BeanName}.o -I \$(DEAF_INC_PATH) \$(MYINCS)";
+\$(BEANNAME).o : \$(BEANNAME).C \$(BEANNAME).h
+\t\$(CC) \$(CFLAGS) -fPIC -c \$(BEANNAME).C -o \$(DEAFBUILD_DIR)/${BeanName}.o -I ./ -I ../../include \$(MYINCS)";
 	}
 	else
 	{
-		# Have the Makefile copy the object file to the location.
 		# Have the Makefile go to the Bean's directory, and call its make command
 		# (which would be the one we printed in the above block).
 		print FILESTREAM "
-${BeanName}.o : \$(MYBEAN_DIR)/${BeanName}.o
-\tcp -u \$(MYBEAN_DIR)/${BeanName}.o ${BeanName}.o
-
-\$(MYBEAN_DIR)/${BeanName}.o : \$(MYBEAN_DIR)/${BeanName}.C
+\$(BEANNAME).o : \$(MYBEAN_DIR)/\$(BEANNAME).C \$(MYBEAN_DIR)/\$(BEANNAME).h
 \tcd \$(MYBEAN_DIR); \\
-\tmake \"DEAFBUILD_DIR=\$(DEAFBUILD_DIR)\" ${BeanName}.o";
+\tmake \"DEAFBUILD_DIR=\$(DEAFBUILD_DIR)\" \$(BEANNAME).o";
 	}
 
 	print FILESTREAM "\n
-${PluginName}.o : ${PluginName}.C
-\t\$(CC) \$(CFLAGS) -fPIC -c ${PluginName}.C -o ${PluginName}.o -I \$(DEAF_INC_PATH) \$(MYINCS) \$(MYSQL_INC)
+\$(PLUGINNAME).o : \$(PLUGINNAME).C \$(PLUGINNAME).h
+\t\$(CC) \$(CFLAGS) -fPIC -c \$(PLUGINNAME).C -o \$(PLUGINNAME).o \\
+\t       -I ./ -I ../../include -I \$(MYBEAN_DIR) \$(MYINCS) \$(MYSQLPP_INC)
 
 clean :
-\t- rm -f lib${PluginName}.so
-\t- rm -f ${BeanName}.o
-\t- rm -f ${PluginName}.o
+\t- rm -f lib\$(PLUGINNAME).so
+\t- rm -f \$(BEANNAME).o
+\t- rm -f \$(PLUGINNAME).o
+\t- rm -f \$(PLUGINNAME).tar
+\t- rm -f \$(PLUGINNAME).tar.gz
+\t- rm -f \$(PLUGINNAME).tar.bz
 
-remove :
-\t- rm -f \$(DEAF_INC_PATH)/${PluginName}.h";
+tar : \$(PLUGINNAME).tar
+
+tar.gz : \$(PLUGINNAME).tar.gz
+
+tar.bz2 : \$(PLUGINNAME).tar.bz2
+
+\$(PLUGINNAME).tar.gz : \$(PLUGINNAME).tar
+\tgzip -f \$(PLUGINNAME).tar
+
+\$(PLUGINNAME).tar.bz2 : \$(PLUGINNAME).tar
+\tbzip2 -f \$(PLUGINNAME).tar
+
+\$(PLUGINNAME).tar : \$(PLUGINNAME).C \$(PLUGINNAME).h \$(PLUGINNAME).reg Makefile";
 
 	if ($IsNewBean)
 	{
-		print FILESTREAM "\n\t- rm -f \$(DEAF_INC_PATH)/${BeanName}.h";
+		print FILESTREAM " \$(BEANNAME).C \$(BEANNAME).h";
 	}
 
-	print FILESTREAM "\n\ninstall : lib${PluginName}.so ${PluginName}.h ";
+	print FILESTREAM "\n\t-rm -f \$(PLUGINNAME).tar
+\ttar -cf \$(PLUGINNAME).tar ../../../DEAF/Plugins/\$(PLUGINNAME)/\$(PLUGINNAME).C ../../../DEAF/Plugins/\$(PLUGINNAME)/\$(PLUGINNAME).h \\
+                ../../../DEAF/Plugins/\$(PLUGINNAME)/\$(PLUGINNAME).reg ../../../DEAF/Plugins/\$(PLUGINNAME)/Makefile ";
 
 	if ($IsNewBean)
 	{
-		print FILESTREAM "${BeanName}.h\n\tcp -f ${BeanName}.h \$(DEAF_INC_PATH)/${BeanName}.h";
+		print FILESTREAM "\\                ../../../DEAF/Plugins/\$(PLUGINNAME)/\$(BEANNAME).C ../../../DEAF/Plugins/\$(PLUGINNAME)/\$(BEANNAME).h";
 	}
 
-	print FILESTREAM "\n\tcp -f ${PluginName}.h \$(DEAF_INC_PATH)/${PluginName}.h\n";
+	print FILESTREAM "\n\n";
 
 	close FILESTREAM;
 
