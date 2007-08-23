@@ -22,6 +22,9 @@ $(DEAF_INSTALL_PATH)/Plugins :
 
 
 clean :
+	-rm -f Plugins.tar
+	-rm -f Plugins.tar.gz
+	-rm -f Plugins.tar.bz2
 	@for PluginDir in *; do \
             if [ -e $$PluginDir/Makefile ]; then \
                 cd $$PluginDir; make clean; cd ..; \
@@ -36,5 +39,26 @@ uninstall :
                 cd $$PluginDir; make uninstall; cd ..; \
             fi; \
         done
-	-rm -r $(DEAF_INSTALL_PATH)/Plugins
+	-rm -fr $(DEAF_INSTALL_PATH)/Plugins
 
+tar : Plugins.tar
+
+tar.gz : Plugins.tar.gz
+
+tar.bz2 : Plugins.tar.bz2
+
+Plugins.tar.gz : Plugins.tar
+	gzip -f Plugins.tar
+
+Plugins.tar.bz2 : Plugins.tar
+	bzip2 -f Plugins.tar
+
+Plugins.tar :
+	-rm -f Plugins.tar
+	tar -cf Plugins.tar ../../DEAF/Plugins/Makefile
+	@for PluginDir in *; do \
+            if [ -e $$PluginDir/Makefile ]; then \
+                cd $$PluginDir; make $$PluginDir.tar; cd ..; tar -Af Plugins.tar $$PluginDir/$$PluginDir.tar; \
+            fi; \
+        done
+	

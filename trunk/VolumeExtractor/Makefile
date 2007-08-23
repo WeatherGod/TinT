@@ -71,7 +71,7 @@ VolumeClass.o : include/VolumeClass.h src/VolumeClass.C
 VolumeInfo.o : include/VolumeInfo.h src/VolumeInfo.C
 	$(CC) $(CFLAGS) -fPIC -c src/VolumeInfo.C -o VolumeInfo.o $(DEFFLAGS) $(INCFLAGS)
 
-##### Still need it to install the header files.
+##### Still need to install the header files.
 $(INSTALL_INC)/FileGroup.h : include/FileGroup.h
 	cp -f include/FileGroup.h $(INSTALL_INC)/FileGroup.h
 
@@ -128,6 +128,9 @@ clean :
 	- rm -f bin/ListJob
 	- rm -f bin/ModifyJob
 	- rm -f bin/shump
+	- rm -f VolumeExtractor.tar
+	- rm -f VolumeExtractor.tar.gz
+	- rm -f VolumeExtractor.tar.bz2
 
 uninstall : remove
 
@@ -146,3 +149,33 @@ remove :
 	- rm -f $(INSTALL_INC)/VolumeClass.h
 	- rm -f $(INSTALL_INC)/VolumeInfo.h
 
+tar : VolumeExtractor.tar
+
+tar.gz : VolumeExtractor.tar.gz
+
+tar.bz2 : VolumeExtractor.tar.bz2
+
+VolumeExtractor.tar.gz : VolumeExtractor.tar
+	gzip -f VolumeExtractor.tar
+
+VolumeExtractor.tar.bz2 : VolumeExtractor.tar
+	bzip2 -f VolumeExtractor.tar
+
+VolumeExtractor.tar : include/FileGroup.h include/FileGroupID_t.h include/FileID_t.h include/FileType.h \
+                      include/JobClass.h include/VolID_t.h include/VolumeClass.h include/VolumeInfo.h \
+                      src/FileGroup.C src/FileGroupID_t.C src/FileID_t.C src/FileType.C \
+                      src/JobClass.C src/VolID_t.C src/VolumeClass.C src/VolumeInfo.C \
+                      src/ListJob.C src/MakeJob.C src/ModifyJob.C src/shump.C \
+                      lib bin Makefile README
+	-rm -f VolumeExtractor.tar
+	tar -cf VolumeExtractor.tar --no-recursion \
+                ../VolumeExtractor/include/FileGroup.h ../VolumeExtractor/include/FileGroupID_t.h \
+                ../VolumeExtractor/include/FileID_t.h ../VolumeExtractor/include/FileType.h \
+                ../VolumeExtractor/include/JobClass.h ../VolumeExtractor/include/VolID_t.h \
+                ../VolumeExtractor/include/VolumeClass.h ../VolumeExtractor/include/VolumeInfo.h \
+                ../VolumeExtractor/src/FileGroup.C ../VolumeExtractor/src/FileGroupID_t.C ../VolumeExtractor/src/FileID_t.C \
+                ../VolumeExtractor/src/FileType.C ../VolumeExtractor/src/JobClass.C ../VolumeExtractor/src/VolID_t.C \
+                ../VolumeExtractor/src/VolumeClass.C ../VolumeExtractor/src/VolumeInfo.C \
+                ../VolumeExtractor/src/ListJob.C ../VolumeExtractor/src/MakeJob.C \
+                ../VolumeExtractor/src/ModifyJob.C ../VolumeExtractor/src/shump.C \
+                ../VolumeExtractor/lib ../VolumeExtractor/bin ../VolumeExtractor/Makefile ../VolumeExtractor/README
