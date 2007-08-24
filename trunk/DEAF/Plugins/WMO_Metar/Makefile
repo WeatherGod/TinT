@@ -68,7 +68,10 @@ $(PLUGINNAME).tar.bz2 : $(PLUGINNAME).tar
 	bzip2 -f $(PLUGINNAME).tar
 
 $(PLUGINNAME).tar : $(PLUGINNAME).C $(PLUGINNAME).h $(PLUGINNAME).reg Makefile $(BEANNAME).C $(BEANNAME).h
+	mkdir $(PLUGINNAME)/
+	cp -f $(PLUGINNAME).C $(PLUGINNAME).h $(PLUGINNAME).reg Makefile \
+              $(BEANNAME).C $(BEANNAME).h $(PLUGINNAME)/
 	-rm -f $(PLUGINNAME).tar
-	tar -cf $(PLUGINNAME).tar ../../../DEAF/Plugins/$(PLUGINNAME)/$(PLUGINNAME).C ../../../DEAF/Plugins/$(PLUGINNAME)/$(PLUGINNAME).h \
-                ../../../DEAF/Plugins/$(PLUGINNAME)/$(PLUGINNAME).reg ../../../DEAF/Plugins/$(PLUGINNAME)/Makefile \
-                ../../../DEAF/Plugins/$(PLUGINNAME)/$(BEANNAME).C ../../../DEAF/Plugins/$(PLUGINNAME)/$(BEANNAME).h
+	tar -cf $(PLUGINNAME).tar $(PLUGINNAME)/
+	rm -rf $(PLUGINNAME)/
+

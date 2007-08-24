@@ -54,11 +54,17 @@ Plugins.tar.bz2 : Plugins.tar
 	bzip2 -f Plugins.tar
 
 Plugins.tar :
-	-rm -f Plugins.tar
-	tar -cf Plugins.tar ../../DEAF/Plugins/Makefile
+	mkdir Plugins/
 	@for PluginDir in *; do \
             if [ -e $$PluginDir/Makefile ]; then \
-                cd $$PluginDir; make $$PluginDir.tar; cd ..; tar -Af Plugins.tar $$PluginDir/$$PluginDir.tar; \
+                cd $$PluginDir; make $$PluginDir.tar; cd ..; \
+                tar -xf "$$PluginDir/$$PluginDir.tar" -C Plugins/; \
             fi; \
         done
-	
+#------- Note: This copy statement MUST come after the loop, or else the 
+#-------       loop will think that this temporary directory is another plugin
+	cp -f Makefile Plugins/
+	-rm -rf Plugins.tar
+	tar -cf Plugins.tar Plugins/
+	rm -rf Plugins/
+

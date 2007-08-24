@@ -23,10 +23,7 @@ lib$(PLUGINNAME).so : $(BEANNAME).o $(PLUGINNAME).o
               $(MYLIB) $(MYSQLPP_LIB) -l stdc++
 
 
-$(BEANNAME).o : $(MYBEAN_DIR)/$(BEANNAME).o
-	- cp -u $(MYBEAN_DIR)/$(BEANNAME).o $(DEAFBUILD_DIR)/$(BEANNAME).o
-
-$(MYBEAN_DIR)/$(BEANNAME).o :
+$(BEANNAME).o : $(MYBEAN_DIR)/$(BEANNAME).C $(MYBEAN_DIR)/$(BEANNAME).h
 	cd $(MYBEAN_DIR); \
 	make DEAFBUILD_DIR='$(DEAFBUILD_DIR)' $(BEANNAME).o
 
@@ -67,7 +64,9 @@ $(PLUGINNAME).tar.bz2 : $(PLUGINNAME).tar
 	bzip2 -f $(PLUGINNAME).tar
 
 $(PLUGINNAME).tar : $(PLUGINNAME).C $(PLUGINNAME).h $(PLUGINNAME).reg Makefile
+	mkdir $(PLUGINNAME)/
+	cp -f $(PLUGINNAME).C $(PLUGINNAME).h $(PLUGINNAME).reg Makefile $(PLUGINNAME)/
 	-rm -f $(PLUGINNAME).tar
-	tar -cf $(PLUGINNAME).tar ../../../DEAF/Plugins/$(PLUGINNAME)/$(PLUGINNAME).C ../../../DEAF/Plugins/$(PLUGINNAME)/$(PLUGINNAME).h \
-                ../../../DEAF/Plugins/$(PLUGINNAME)/$(PLUGINNAME).reg ../../../DEAF/Plugins/$(PLUGINNAME)/Makefile
+	tar -cf $(PLUGINNAME).tar $(PLUGINNAME)/
+	rm -rf $(PLUGINNAME)/
 

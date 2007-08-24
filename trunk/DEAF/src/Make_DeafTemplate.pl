@@ -699,7 +699,7 @@ DEAFBUILD_DIR = \$(PWD)
 plugin : lib\$(PLUGINNAME).so
 
 
-lib\$(PLUGINNAME).so : \$(BEANNAME).o $(PLUGINNAME).o
+lib\$(PLUGINNAME).so : \$(BEANNAME).o \$(PLUGINNAME).o
 \t\$(CC) \$(LDFLAGS) -shared \$(PLUGINNAME).o \$(BEANNAME).o  -o lib\$(PLUGINNAME).so \\
 \t       \$(MYLIB) \$(MYSQLPP_LIB) -l stdc++
 ";
@@ -709,7 +709,7 @@ lib\$(PLUGINNAME).so : \$(BEANNAME).o $(PLUGINNAME).o
 		# Have the Makefile build the bean directly to the location
 		print FILESTREAM "
 \$(BEANNAME).o : \$(BEANNAME).C \$(BEANNAME).h
-\t\$(CC) \$(CFLAGS) -fPIC -c \$(BEANNAME).C -o \$(DEAFBUILD_DIR)/${BeanName}.o -I ./ -I ../../include \$(MYINCS)";
+\t\$(CC) \$(CFLAGS) -fPIC -c \$(BEANNAME).C -o \$(DEAFBUILD_DIR)/\$(BEANNAME).o -I ./ -I ../../include \$(MYINCS)";
 	}
 	else
 	{
@@ -753,16 +753,14 @@ tar.bz2 : \$(PLUGINNAME).tar.bz2
 		print FILESTREAM " \$(BEANNAME).C \$(BEANNAME).h";
 	}
 
-	print FILESTREAM "\n\t-rm -f \$(PLUGINNAME).tar
-\ttar -cf \$(PLUGINNAME).tar ../../../DEAF/Plugins/\$(PLUGINNAME)/\$(PLUGINNAME).C ../../../DEAF/Plugins/\$(PLUGINNAME)/\$(PLUGINNAME).h \\
-                ../../../DEAF/Plugins/\$(PLUGINNAME)/\$(PLUGINNAME).reg ../../../DEAF/Plugins/\$(PLUGINNAME)/Makefile ";
+	print FILESTREAM "\n\tmkdir \$(PLUGINNAME)/\n\tcp -f \$(PLUGINNAME).C \$(PLUGINNAME).h \$(PLUGINNAME).reg Makefile ";
 
 	if ($IsNewBean)
 	{
-		print FILESTREAM "\\                ../../../DEAF/Plugins/\$(PLUGINNAME)/\$(BEANNAME).C ../../../DEAF/Plugins/\$(PLUGINNAME)/\$(BEANNAME).h";
+		print FILESTREAM "\\\n\t      \$(BEANNAME).C \$(BEANNAME).h ";
 	}
 
-	print FILESTREAM "\n\n";
+	print FILESTREAM "\$(PLUGINNAME)/\n\t-rm -f \$(PLUGINNAME).tar\n\ttar -cf \$(PLUGINNAME).tar \$(PLUGINNAME)/\n\trm -rf \$(PLUGINNAME)/";
 
 	close FILESTREAM;
 
@@ -783,7 +781,7 @@ sub GetDeafDirs
 {
 	my $DeafHomeVal = $ENV{DEAF_HOME};
 
-	if ($DeafHomeVal eq '')
+	if (!defined($DeafHomeVal) || $DeafHomeVal eq '')
 	{
 		print STDERR "ERROR: The DEAF_HOME environment variable is missing or empty!\n";
 		print STDERR "     : Using '.' instead...\n";
