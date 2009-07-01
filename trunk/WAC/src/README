@@ -1,0 +1,27 @@
+To compile Sorter:
+gcc -O2 Sorter.C -o $WAC_HOME/Commands/Sorter -L ~/usr/lib -l stdc++ -l boost_regex
+
+
+To compile Make_Archive_Tables:
+gcc Make_Archive_Tables.C -o $WAC_HOME/Commands/Make_Archive_Tables -L ~/usr/lib_ls2 -L /usr/lib/mysql -I /usr/local/mysql/include/mysql -l mysqlpp -l stdc++
+
+
+
+To compile Load_Sorted_Data:
+gcc Load_Sorted_Data.C -o $WAC_HOME/Commands/Load_Sorted_Data -L ~/usr/lib_ls2 -L /usr/lib/mysql -I /usr/local/mysql/include/mysql -l mysqlpp -l stdc++
+
+
+
+To compile Load_Volume_Data:
+gcc Load_Volume_Data.C -o $WAC_HOME/Commands/Load_Volume_Data -L ~/usr/lib_ls2 -L /usr/lib/mysql -I /usr/local/mysql/include/mysql -l mysqlpp -l stdc++
+
+
+
+Note that -O2 is the letter 'O' followed by a 2.  If you do not optimize these programs, this system will slow to a crawl!
+Make sure that mysqlpp is installed on the system that you intend to run from.  Compile it against the server you will use,
+so the paths indicated here may need to be difference for YOUR setup!  Always use the API the was compiled against the
+server you will access.
+
+Also, set your LD_LIBRARY_PATH to your mysqlpp library and set CPATH to your mysqlpp includes.
+
+As always with official Ben Root software, you will need CPATH to point to the UtlyFiles directory!

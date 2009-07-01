@@ -1,0 +1,50 @@
+Please edit Makefile first before trying to build WAC.
+Various paths and other configurable settings must be set before building.
+
+This package requires the installation of several tools.
+   1.  BUtils
+   2.  mysql++  (which, in turn, requires mysql)
+   3.  boost's regex module
+
+There are a few other dependencies, but they are mostly perl-based and
+should be part of a standard perl installation (like DBI).
+
+This package does not create the database or the users.  This must be created separately
+in accordance to the system administrator's wishes.
+
+The mysql++ package must be built against the mysql system being used.
+Note that the location of the mysql.h file might not be the same
+on all systems!
+
+
+In Makefile, note the locations of BUtils, mysql++, mysql.h, regex++, and the
+installation location for WAC's library file, include files,
+and everything else.
+
+Some commands for building this system (in no particular order...):
+
+ % make TheDirs
+
+Note that this one has to be executed while logged onto the administration system
+ % make TheAdmins
+
+
+ % make TheListers
+
+ % make WACmysql.cnf
+
+ % make install
+
+
+ % make clean
+
+ % make remove
+ % make uninstall
+
+Individual programs can be indicated to rebuild just them.  For example:
+ % make Sorter
+
+or
+ % make Load_Sorted_Data
+
+
